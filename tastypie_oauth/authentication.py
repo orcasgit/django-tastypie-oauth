@@ -62,11 +62,11 @@ class OAuth20Authentication(Authentication):
             # request in case we need it later
             request.META['oauth_consumer_key'] = key
             return True
-        except KeyError, e:
+        except KeyError:
             logging.exception("Error in OAuth20Authentication.")
             request.user = AnonymousUser()
             return False
-        except Exception, e:
+        except Exception:
             logging.exception("Error in OAuth20Authentication.")
             return False
         return True
@@ -89,7 +89,7 @@ def verify_access_token(key):
         # Check if token has expired
         if token.expires < timezone.now():
             raise OAuthError('AccessToken has expired.')
-    except AccessToken.DoesNotExist, e:
+    except AccessToken.DoesNotExist:
         raise OAuthError("AccessToken not found at all.")
 
     logging.info('Valid access')
