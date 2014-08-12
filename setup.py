@@ -15,7 +15,6 @@ setup(
     install_requires=["setuptools"] + required,
     license='Apache 2.0',
     packages=['tastypie_oauth'],
-    package_data={'': ['LICENCE']},
     include_package_data=True,
     zip_safe=False,
     classifiers=[
