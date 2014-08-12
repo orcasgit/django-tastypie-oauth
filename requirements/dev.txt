@@ -1,0 +1,4 @@
+-r test.txt
+
+django==1.6.5
+django_tastypie==0.11.1

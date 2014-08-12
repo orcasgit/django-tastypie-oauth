@@ -1,5 +1,9 @@
 from setuptools import setup
 
+
+required = [line for line in open('requirements/base.txt').read().split("\n")]
+
+
 setup(
     name='django-tastypie-oauth',
     version=__import__('tastypie_oauth').__version__,
@@ -8,6 +12,7 @@ setup(
     author='Oregon Center for Applied Science',
     author_email='bpitcher@orcasinc.com',
     url='https://github.com/orcasgit/django-tastypie-oauth',
+    install_requires=["setuptools"] + required,
     license='Apache 2.0',
     packages=['tastypie_oauth'],
     package_data={'': ['LICENCE']},
