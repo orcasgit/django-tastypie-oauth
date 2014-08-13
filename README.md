@@ -1,6 +1,8 @@
 django-tastypie-oauth
 =====================
 
+[![Build Status](https://travis-ci.org/orcasgit/django-tastypie-oauth.svg?branch=master)](https://travis-ci.org/orcasgit/django-tastypie-oauth) [![Coverage Status](https://coveralls.io/repos/orcasgit/django-tastypie-oauth/badge.png?branch=master)](https://coveralls.io/r/orcasgit/django-tastypie-oauth?branch=master) [![Requirements Status](https://requires.io/github/orcasgit/django-tastypie-oauth/requirements.png?branch=master)](https://requires.io/github/orcasgit/django-tastypie-oauth/requirements/?branch=master)
+
 Providing OAuth services for Tastypie APIs
 
 Dependencies
@@ -25,14 +27,14 @@ Usage
     from polls.models import Poll, Choice
     from tastypie import fields
     from tastypie_oauth.authentication import OAuth20Authentication
-    
+
     class ChoiceResource(ModelResource):
         class Meta:
             queryset = Choice.objects.all()
             resource_name = 'choice'
             authorization = DjangoAuthorization()
             authentication = OAuth20Authentication()
-    
+
     class PollResource(ModelResource):
         choices = fields.ToManyField(ChoiceResource, 'choice_set', full=True)
         class Meta:
