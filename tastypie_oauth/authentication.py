@@ -14,6 +14,9 @@ Dependencies (one of these):
 - django-oauth2-provider: https://github.com/caffeinehit/django-oauth2-provider
 """
 
+log = logging.getLogger('tastypie_oauth')
+
+
 class OAuthError(RuntimeError):
     """Generic exception class."""
     def __init__(self, message='OAuth error occured.'):
@@ -36,7 +39,7 @@ class OAuth20Authentication(Authentication):
         values in "Authorization" header, or as a GET request
         or in a POST body.
         """
-        logging.info("OAuth20Authentication")
+        log.info("OAuth20Authentication")
 
         try:
             key = request.GET.get('oauth_consumer_key')
@@ -47,7 +50,7 @@ class OAuth20Authentication(Authentication):
                 if auth_header_value:
                     key = auth_header_value.split(' ')[1]
             if not key:
-                logging.error('OAuth20Authentication. No consumer_key found.')
+                log.info('OAuth20Authentication. No consumer_key found.')
                 return None
             """
             If verify_access_token() does not pass, it will raise an error
@@ -63,13 +66,13 @@ class OAuth20Authentication(Authentication):
             request.META['oauth_consumer_key'] = key
             return True
         except KeyError:
-            logging.exception("Error in OAuth20Authentication.")
+            log.exception("Error in OAuth20Authentication.")
             request.user = AnonymousUser()
             return False
         except Exception:
-            logging.exception("Error in OAuth20Authentication.")
+            log.exception("Error in OAuth20Authentication.")
             return False
-        return True
+
 
 def verify_access_token(key):
     # Import the AccessToken model
@@ -92,5 +95,5 @@ def verify_access_token(key):
     except AccessToken.DoesNotExist:
         raise OAuthError("AccessToken not found at all.")
 
-    logging.info('Valid access')
+    log.info('Valid access')
     return token
