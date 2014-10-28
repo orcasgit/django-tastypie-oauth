@@ -14,6 +14,7 @@ Dependencies (one of these):
 - django-oauth2-provider: https://github.com/caffeinehit/django-oauth2-provider
 """
 
+
 class OAuthError(RuntimeError):
     """Generic exception class."""
     def __init__(self, message='OAuth error occured.'):
@@ -69,7 +70,7 @@ class OAuth20Authentication(Authentication):
         except Exception:
             logging.exception("Error in OAuth20Authentication.")
             return False
-        return True
+
 
 def verify_access_token(key):
     # Import the AccessToken model
