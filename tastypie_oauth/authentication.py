@@ -76,13 +76,13 @@ class OAuth20Authentication(Authentication):
 
 def verify_access_token(key):
     # Import the AccessToken model
+    model = settings.OAUTH_ACCESS_TOKEN_MODEL
     try:
-        model = settings.OAUTH_ACCESS_TOKEN_MODEL
         model_parts = model.split('.')
         module_path = '.'.join(model_parts[:-1])
         module = __import__(module_path, globals(), locals(), ['AccessToken'])
         AccessToken = getattr(module, model_parts[-1])
-    except:
+    except ImportError:
         raise OAuthError("Error importing AccessToken model: %s" % model)
 
     # Check if key is in AccessToken key
