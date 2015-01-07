@@ -144,7 +144,7 @@ class OAuth2Scoped0Authentication(OAuth20Authentication):
                     from provider.scope import check
                     check_method = lambda scope: check(scope, token.scope)
                 elif model.startswith("oauth2_provider"): #oauth2 toolkit
-                    check_method = lambda scope: token.allow_scopes(scope)
+                    check_method = lambda scope: token.allow_scopes(scope.split())
                 else:
                     raise Exception("oauth provider is not found")
                 #required scope is either a string(oauth2 toolkit), int(oauth2-provider) or an iterable,
@@ -153,12 +153,12 @@ class OAuth2Scoped0Authentication(OAuth20Authentication):
                 if not isinstance(required_scopes, six.string_types):
                     try:
                         for scope in required_scopes:
-                            if check_method(scope.split()):
+                            if check_method(scope):
                                 return True
                     except TypeError:
                         return check_method(required_scopes) #for oauth2 provider, required_scope must be an int
                 else:
-                    return check_method(required_scopes.split()) #for oauth2 toolkit
+                    return check_method(required_scopes) #for oauth2 toolkit
             else:
                 return True # a None scope means always allowed
         else:
