@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.utils import timezone
 from tastypie.authentication import Authentication
-import types, collections
+import types
 
 """
 This is a simple OAuth 2.0 authentication model for tastypie
@@ -98,10 +98,11 @@ class OAuth20Authentication(Authentication):
         return token
 
 class OAuth2Scoped0Authentication(OAuth20Authentication):
-    def __init__(self, realm="API", post=None, get=None, patch=None, put=None, use_default=True, **kwargs):
+    def __init__(self, realm="API", post=None, get=None, patch=None, put=None, delete=None, use_default=True, **kwargs):
         """ 
             get, post, patch and put is desired to be a scope or a list of scopes or None
             if get is None, it will default to post
+            if delete is None, it will default to post
             if both patch and put are none, they are all default to post
             if one of patch or put is none, the two will default to the one that is not none
 
@@ -118,6 +119,7 @@ class OAuth2Scoped0Authentication(OAuth20Authentication):
         self.POST = post
         if use_default:
             self.GET = get or post
+            self.DELETE = delete or post
             if not patch and not put:
                 self.PATCH = self.PUT = post
             elif not patch or not put:
@@ -125,7 +127,7 @@ class OAuth2Scoped0Authentication(OAuth20Authentication):
             else:
                 self.PATCH = patch; self.PUT = put
         else:
-            self.GET=get; self.PUT=put; self.PATCH=patch
+            self.GET=get; self.PUT=put; self.PATCH=patch; self.DELETE=delet
 
     def verify_access_token(self, key, request, **kwargs):
         token = super(OAuth2Scoped0Authentication, self).verify_access_token(key, **kwargs)
@@ -160,9 +162,5 @@ class OAuth2Scoped0Authentication(OAuth20Authentication):
             else:
                 return True # a None scope means always allowed
         else:
-            raise OAuthError("Request method is not recognized")
-
-
-
-
+            raise OAuthError("Request method is not recognized")        
 
