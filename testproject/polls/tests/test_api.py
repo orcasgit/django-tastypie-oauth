@@ -27,6 +27,11 @@ class PollAPITestCase(ResourceTestCase):
         password = 'password'
         self.user = User.objects.create_user(username, email, password)
 
+        self.post_data = {
+            "choice": "I don't know",
+            "poll": '/api/v1/poll/1/'
+        }
+
         # Prepare OAuth Toolkit Access
         ot_application = Application(
             user=self.user,
@@ -36,15 +41,20 @@ class PollAPITestCase(ResourceTestCase):
             name='Test Application'
         )
         ot_application.save()
-        self.ot_token = 'TOKEN'
-        ot_access_token = AccessToken(
-            user=self.user,
-            application=ot_application,
-            expires=datetime.datetime.now() + datetime.timedelta(days=10),
-            scope='read',
-            token=self.ot_token
-        )
-        ot_access_token.save()
+
+        scopes = ("read","write","read write")
+        for scope in scopes:
+            scope_attrbute_name = "ot_token_"+scope.replace(" ","_")
+            setattr(self, scope_attrbute_name, "TOKEN"+scope)
+            ot_access_token = AccessToken(
+                user=self.user,
+                application=ot_application,
+                expires=datetime.datetime.now() + datetime.timedelta(days=10),
+                scope=scope,
+                token=getattr(self,scope_attrbute_name)
+            )
+            ot_access_token.save()
+        self.ot_token = self.ot_token_read_write
 
     def test_unauthorized(self):
         resp = self.api_client.get(self.urls['choice'], format='json')
@@ -55,3 +65,35 @@ class PollAPITestCase(ResourceTestCase):
             self.urls['choice'], self.ot_token), format='json')
         self.assertValidJSONResponse(resp)
         self.assertEqual(len(self.deserialize(resp)['objects']), 2)
+
+    def test_scope_authorizations(self):
+        #choice requires a read token, we should decline a token only with write
+        resp = self.api_client.get('%s?oauth_consumer_key=%s' % (
+            self.urls['choice'], self.ot_token_write), format='json')
+        self.assertHttpUnauthorized(resp)
+
+        #a read should pass
+        resp = self.api_client.get('%s?oauth_consumer_key=%s' % (
+            self.urls['choice'], self.ot_token_read), format='json')
+        self.assertValidJSONResponse(resp)
+        self.assertEqual(len(self.deserialize(resp)['objects']), 2)
+
+        #a read+write should pass
+        resp = self.api_client.get('%s?oauth_consumer_key=%s' % (
+            self.urls['choice'], self.ot_token_read_write), format='json')
+        self.assertValidJSONResponse(resp)
+        self.assertEqual(len(self.deserialize(resp)['objects']), 2)
+
+        #only read+write should pass for post
+        resp = self.api_client.post('%s?oauth_consumer_key=%s' % (
+            self.urls['choice'], self.ot_token_write), format='json', data=self.post_data)
+        self.assertHttpUnauthorized(resp)
+        resp = self.api_client.post('%s?oauth_consumer_key=%s' % (
+            self.urls['choice'], self.ot_token_write), format='json', data=self.post_data)
+        self.assertHttpUnauthorized(resp)
+        resp = self.api_client.post('%s?oauth_consumer_key=%s' % (
+            self.urls['choice'], self.ot_token_read_write), format='json', data=self.post_data)
+        self.assertHttpCreated(resp)
+
+
+

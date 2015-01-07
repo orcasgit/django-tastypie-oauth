@@ -1,18 +1,25 @@
 from tastypie import fields
 from tastypie.api import Api
-from tastypie.authorization import DjangoAuthorization
+from tastypie.authorization import DjangoAuthorization, Authorization
 from tastypie.resources import ModelResource
-from tastypie_oauth.authentication import OAuth20Authentication
+from tastypie_oauth.authentication import OAuth20Authentication, OAuth2Scoped0Authentication
 
 from .models import Poll, Choice
 
 
 class ChoiceResource(ModelResource):
+    poll = fields.ToOneField("polls.api.PollResource", "poll", full=False)
     class Meta:
         queryset = Choice.objects.all()
         resource_name = 'choice'
-        authorization = DjangoAuthorization()
-        authentication = OAuth20Authentication()
+        authorization = Authorization()
+        authentication = OAuth2Scoped0Authentication(
+                            post=("read write",),
+                            get=("read",),
+                            put=("read","write")
+                        )
+        #authentication = OAuth20Authentication()
+
 
 
 class PollResource(ModelResource):
