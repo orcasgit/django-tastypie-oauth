@@ -111,7 +111,7 @@ class OAuth2Scoped0Authentication(OAuth20Authentication):
 
             the list of scopes should have a logic "or" between them
             e.g. get=("a b","c") for oauth2-toolkit means "GET method requires scope 'a b'('a' and 'b') or scope 'c' "
-                 get=(a|b,c) is the corresponding form for oauth2-provider, where a,b,c should be some constans you defined in your settings
+                 get=(a|b,c) is the corresponding form for oauth2-provider, where a,b,c should be some constants you defined in your settings
                  Note: for oauth2-toolkit, you have to provide a space seperated string of combination of scopes
             you can also specify only one scope(instead of a list), and that scope will the only scope that has permission to the according method
         """
