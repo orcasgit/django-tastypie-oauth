@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.utils import timezone
 from tastypie.authentication import Authentication
-import types
+import six
 
 """
 This is a simple OAuth 2.0 authentication model for tastypie
@@ -150,7 +150,7 @@ class OAuth2Scoped0Authentication(OAuth20Authentication):
                 #required scope is either a string(oauth2 toolkit), int(oauth2-provider) or an iterable,
                 #if string or int, check if it is allowed for our access token
                 #otherwise, iterabte through the required_scopes to see if we have one allowed scope
-                if not isinstance(required_scopes, types.StringTypes):
+                if not isinstance(required_scopes, six.string_types):
                     try:
                         for scope in required_scopes:
                             if check_method(scope.split()):
