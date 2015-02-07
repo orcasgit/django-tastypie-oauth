@@ -1,5 +1,5 @@
-django-oauth-toolkit==0.7.2
-django-oauth2-provider==0.2.6.1
-python-mimeparse==0.1.4
-coverage==3.7.1
-tox==1.8.1
+django-oauth-toolkit>=0.7,<0.8
+django-oauth2-provider>=0.2,<0.3
+python-mimeparse>=0.1,<0.2
+coverage>=3.7,<3.8
+tox>=1.8,<1.9
