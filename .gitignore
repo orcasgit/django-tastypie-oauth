@@ -27,6 +27,7 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # Unit test / coverage reports
+testproject/dj_migrations
 htmlcov/
 .tox/
 .coverage
@@ -51,4 +52,3 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
-
