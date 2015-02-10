@@ -118,7 +118,7 @@ class PollAPITestCaseOAuthToolkit(PollAPITestCaseBase, CustomSettingsTestCase):
         ot_access_token.save()
 
 
-@skipIf(six.PY3 or VERSION > (1,8),
+@skipIf(six.PY3 or VERSION[0:2] > (1,8),
         'Django OAuth2 Provider does not support Python 3.x or Django > 1.8')
 class PollAPITestCaseOAuth2Provider(PollAPITestCaseBase, CustomSettingsTestCase):
     apps_needing_migration = ('provider.oauth2',)
