@@ -109,19 +109,17 @@ TEMPLATE_DIRS = (
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.admin',
-    'django.contrib.admindocs',
-    'oauth2_provider',
     'tastypie',
     'tastypie_oauth',
     'polls',
 )
+OAUTH2_PROVIDER_APPLICATION_MODEL='oauth2_provider.Application'
+MIGRATION_MODULES = {
+    'oauth2_provider': 'dj_migrations',
+    'provider.oauth2': 'dj_migrations'
+}
 
-OAUTH_ACCESS_TOKEN_MODEL = 'oauth2_provider.models.AccessToken'
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
