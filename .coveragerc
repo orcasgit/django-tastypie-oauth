@@ -1,0 +1,5 @@
+[paths]
+source =
+    tastypie_oauth/
+    .tox/py*/lib/python*/site-packages/tastypie_oauth/
+    .tox/pypy-*/site-packages/tastypie_oauth/
