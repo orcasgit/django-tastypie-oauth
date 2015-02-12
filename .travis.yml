@@ -2,33 +2,11 @@
 
 language: python
 python: 3.4
-env:
-  - TOX_ENV=pypy-trunk
-  - TOX_ENV=pypy-1.8.X
-  - TOX_ENV=pypy-1.7.X
-  - TOX_ENV=pypy-1.6.X
-  - TOX_ENV=py34-trunk
-  - TOX_ENV=py34-1.8.X
-  - TOX_ENV=py34-1.7.X
-  - TOX_ENV=py34-1.6.X
-  - TOX_ENV=py33-trunk
-  - TOX_ENV=py33-1.8.X
-  - TOX_ENV=py33-1.7.X
-  - TOX_ENV=py33-1.6.X
-  - TOX_ENV=py27-trunk
-  - TOX_ENV=py27-1.8.X
-  - TOX_ENV=py27-1.7.X
-  - TOX_ENV=py27-1.6.X
-  - TOX_ENV=py26-1.6.X-tp9
-  - TOX_ENV=py26-1.6.X-tp10
-  - TOX_ENV=py26-1.6.X-tp11
-  - TOX_ENV=py26-1.6.X-tp12
-  - TOX_ENV=py26-1.6.X-tp-trunk
 install:
   - pip install coveralls
   - pip install tox
 script:
-  - tox -e $TOX_ENV
+  - tox
   - coverage report -m
 after_success:
   coveralls --verbose
