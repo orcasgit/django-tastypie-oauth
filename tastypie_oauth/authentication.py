@@ -1,4 +1,5 @@
 import logging
+import json
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -36,7 +37,7 @@ class OAuth20Authentication(Authentication):
     def is_authenticated(self, request, **kwargs):
         """
         Verify 2-legged oauth request. Parameters accepted as
-        values in "Authorization" header, or as a GET request
+        values in the "Authorization" header, as a GET request parameter,
         or in a POST body.
         """
         log.info("OAuth20Authentication")
@@ -44,11 +45,15 @@ class OAuth20Authentication(Authentication):
         try:
             key = request.GET.get('oauth_consumer_key')
             if not key:
-                key = request.POST.get('oauth_consumer_key')
-            if not key:
-                auth_header_value = request.META.get('HTTP_AUTHORIZATION')
-                if auth_header_value:
-                    key = auth_header_value.split(' ')[1]
+                for header in ['Authorization', 'HTTP_AUTHORIZATION']:
+                    auth_header_value = request.META.get(header)
+                    if auth_header_value:
+                        key = auth_header_value.split(' ')[1]
+                        break
+            if not key and request.method == 'POST':
+                if request.META.get('CONTENT_TYPE') == 'application/json':
+                    decoded_body = request.body.decode('utf8')
+                    key = json.loads(decoded_body)['oauth_consumer_key']
             if not key:
                 log.info('OAuth20Authentication. No consumer_key found.')
                 return None

@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.core.urlresolvers import reverse
+from django.test.client import Client
 from django.test.utils import override_settings
 from tastypie.test import ResourceTestCase
 
@@ -63,6 +64,7 @@ class PollAPITestCaseBase(object):
     def setUp(self):
         super(PollAPITestCaseBase, self).setUp()
         call_command('loaddata', 'polls_api_testdata.json', verbosity=0)
+        self.client = Client()
         self.poll_1 = Poll.objects.get(pk=1)
         self.poll_2 = Poll.objects.get(pk=2)
         self.urls = {}
@@ -80,8 +82,44 @@ class PollAPITestCaseBase(object):
         # Our fake oauth token
         self.oauth_token = 'TOKEN'
 
+    def test_authorization(self):
+        resp = self.api_client.get('%s?oauth_consumer_key=%s' % (
+            self.urls['choice'], self.oauth_token))
+        self.assertHttpOK(resp)
+
+        resp = self.api_client.get(
+            self.urls['choice'], authentication='OAuth ' + self.oauth_token)
+        self.assertHttpOK(resp)
+
+        resp = self.api_client.get(
+            self.urls['choice'], Authorization='OAuth ' + self.oauth_token)
+        self.assertHttpOK(resp)
+
+        data = {
+            'poll': self.urls['poll'] + '1/',
+            'choice': 'Maybe'
+        }
+        resp = self.api_client.post(self.urls['choice'], data=data,
+                                    authentication='OAuth ' + self.oauth_token)
+        self.assertHttpCreated(resp)
+
+        resp = self.api_client.post(self.urls['choice'], data=data,
+                                    Authorization='OAuth ' + self.oauth_token)
+        self.assertHttpCreated(resp)
+
+        data['oauth_consumer_key'] = self.oauth_token
+        resp = self.api_client.post(self.urls['choice'], data=data)
+        self.assertHttpCreated(resp)
+
     def test_unauthorized(self):
         resp = self.api_client.get(self.urls['choice'], format='json')
+        self.assertHttpUnauthorized(resp)
+
+        data = {
+            'poll': self.urls['poll'] + '1/',
+            'choice': 'Maybe'
+        }
+        resp = self.api_client.post(self.urls['choice'], data=data)
         self.assertHttpUnauthorized(resp)
 
     def test_get_choices(self):
