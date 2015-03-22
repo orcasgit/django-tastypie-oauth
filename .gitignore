@@ -28,6 +28,7 @@ pip-delete-this-directory.txt
 
 # Unit test / coverage reports
 testproject/dj_migrations
+testproject/polls.db
 htmlcov/
 .tox/
 .coverage
