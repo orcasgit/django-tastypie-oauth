@@ -27,7 +27,7 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # Unit test / coverage reports
-testproject/dj_migrations
+testproject/dj_migrations/0001_initial.py
 testproject/polls.db
 htmlcov/
 .tox/
