@@ -43,4 +43,38 @@ Usage
             authorization = DjangoAuthorization()
             authentication = OAuth20Authentication()
     ```
+    Or, if you want to use scoped authentication, use the `OAuth2ScopedAuthentication` class:
+    ```python
+    from tastypie_oauth.authentication import OAuth20ScopedAuthentication
+
+    # With Django-oauth-toolkit
+    class ChoiceResource(ModelResource):
+        poll = fields.ToOneField("polls.api.PollResource", "poll", full=False)
+        class Meta:
+            resource_name = 'choice'
+            queryset = Choice.objects.all()
+            authorization = DjangoAuthorization()
+            authentication = OAuth2ScopedAuthentication(
+                post=("read write",),
+                get=("read",),
+                put=("read","write")
+            )
+    ```
+    ```python
+    from provider.constants import READ, WRITE, READ_WRITE
+    from tastypie_oauth.authentication import OAuth20ScopedAuthentication
+
+    # With Django-oauth2-provider
+    class ChoiceResource(ModelResource):
+        poll = fields.ToOneField("polls.api.PollResource", "poll", full=False)
+        class Meta:
+            resource_name = 'choice'
+            queryset = Choice.objects.all()
+            authorization = DjangoAuthorization()
+            authentication = OAuth2ScopedAuthentication(
+                post=(READ_WRITE,),
+                get=(READ,),
+                put=(READ,WRITE)
+            )
+      ```
 4. After authorizing the user and gaining an access token, you can use the API almost as before with just one minor change. You must add a `oauth_consumer_key` GET or POST parameter with the access token as the value, or put the access token in "Authorization" header.
