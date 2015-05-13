@@ -2,4 +2,4 @@ django-oauth-toolkit>=0.8,<0.9
 django-oauth2-provider>=0.2,<0.3
 python-mimeparse>=0.1,<0.2
 coverage>=3.7,<3.8
-tox>=1.8,<1.10
+tox>=2.0,<2.1
