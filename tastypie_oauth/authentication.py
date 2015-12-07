@@ -63,7 +63,7 @@ class OAuth20Authentication(Authentication):
 
             # If OAuth authentication is successful, set the request user to
             # the token user for authorization
-            request.user = token.user
+            request.user = token.user or AnonymousUser()
 
             # If OAuth authentication is successful, set oauth_consumer_key on
             # request in case we need it later
