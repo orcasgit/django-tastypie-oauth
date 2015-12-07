@@ -6,7 +6,6 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.utils import timezone
 from tastypie.authentication import Authentication
-from tastypie.http import HttpUnauthorized
 
 """
 This is a simple OAuth 2.0 authentication model for tastypie
