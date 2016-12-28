@@ -1,4 +1,3 @@
-from provider.constants import READ, WRITE, READ_WRITE
 from tastypie import fields
 from tastypie.api import Api
 from tastypie.authorization import Authorization
