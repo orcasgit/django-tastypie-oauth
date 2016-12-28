@@ -1,5 +1,5 @@
-from django.conf.urls import patterns, include
+from django.conf.urls import include, url
 from polls.api import api
 
 
-urlpatterns = patterns('', (r'^api/', include(api.urls)))
+urlpatterns = [url(r'^api/', include(api.urls))]

@@ -1,4 +1,4 @@
 -r test.txt
 
-django>=1.7,<1.8a1
-django-tastypie>=0.12,<0.13
+django>=1.8
+django-tastypie>=0.12

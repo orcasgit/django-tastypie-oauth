@@ -1,7 +1,7 @@
 from provider.constants import READ, WRITE, READ_WRITE
 from tastypie import fields
 from tastypie.api import Api
-from tastypie.authorization import Authorization, DjangoAuthorization
+from tastypie.authorization import Authorization
 from tastypie.resources import ModelResource
 from tastypie_oauth.authentication import (
     OAuth20Authentication,
@@ -64,7 +64,7 @@ class ScopedChoiceResourceOAuth2Provider(ModelResource):
 
 class PollResourceMeta:
     queryset = Poll.objects.all()
-    authorization = DjangoAuthorization()
+    authorization = Authorization()
 
 
 class PollResourceOAuthToolkit(ModelResource):
