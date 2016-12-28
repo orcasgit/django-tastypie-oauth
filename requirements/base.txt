@@ -1,5 +1,3 @@
 django_tastypie>=0.12
 django-oauth-toolkit>=0.7
 python-mimeparse>=0.1
-# or
-# django-oauth2-provider>=0.2

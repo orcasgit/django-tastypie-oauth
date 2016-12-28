@@ -5,6 +5,7 @@ import six
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.utils import timezone
+from oauth2_provider.models import AccessToken
 from tastypie.authentication import Authentication
 from tastypie.http import HttpUnauthorized
 
@@ -79,16 +80,6 @@ class OAuth20Authentication(Authentication):
             return False
 
     def verify_access_token(self, key, request, **kwargs):
-        # Import the AccessToken model
-        model = settings.OAUTH_ACCESS_TOKEN_MODEL
-        try:
-            model_parts = model.split('.')
-            module_path = '.'.join(model_parts[:-1])
-            module = __import__(module_path, globals(), locals(), ['AccessToken'])
-            AccessToken = getattr(module, model_parts[-1])
-        except ImportError:
-            raise OAuthError("Error importing AccessToken model: %s" % model)
-
         # Check if key is in AccessToken key
         try:
             token = AccessToken.objects.get(token=key)
@@ -154,28 +145,20 @@ class OAuth2ScopedAuthentication(OAuth20Authentication):
         # a None scope means always allowed
         if required_scopes is None:
             return True
-        model = settings.OAUTH_ACCESS_TOKEN_MODEL
-        if model.startswith("provider"):  # oauth2-provider
-            from provider.scope import check
-            check_method = lambda scope: check(scope, token.scope)
-        elif model.startswith("oauth2_provider"):  # oauth toolkit
-            check_method = lambda scope: token.allow_scopes(scope.split())
-        else:
-            raise Exception("oauth provider is not found")
         """
-        The required scope is either a string(oauth2 toolkit),
-        int(oauth2-provider) or an iterable. If string or int, check if it is
-        allowed for our access token otherwise, iterate through the
-        required_scopes to see which scopes are allowed
+        The required scope is either a string or an iterable. If string,
+        check if it is allowed for our access token otherwise, iterate through
+        the required_scopes to see which scopes are allowed
         """
         # for non iterable types
-        if isinstance(required_scopes, six.string_types) or \
-                isinstance(required_scopes, six.integer_types):
-            return [required_scopes] if check_method(required_scopes) else []
+        if isinstance(required_scopes, six.string_types):
+            if token.allow_scopes(required_scopes.split()):
+                return [required_scopes]
+            return []
         allowed_scopes = []
         try:
             for scope in required_scopes:
-                if check_method(scope):
+                if token.allow_scopes(scope.split()):
                     allowed_scopes.append(scope)
         except:
             raise Exception('Invalid required scope values')

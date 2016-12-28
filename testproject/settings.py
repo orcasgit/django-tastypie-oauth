@@ -112,13 +112,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'tastypie',
     'tastypie_oauth',
+    'oauth2_provider',
     'polls',
 )
 OAUTH2_PROVIDER_APPLICATION_MODEL='oauth2_provider.Application'
-MIGRATION_MODULES = {
-    'oauth2_provider': 'dj_migrations',
-    'provider.oauth2': 'dj_migrations'
-}
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
