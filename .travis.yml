@@ -1,12 +1,12 @@
 ---
 
 language: python
-python: 3.4
+python:
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
 install:
-  - pip install coveralls
-  - pip install tox
-script:
-  - tox
-  - coverage report -m
-after_success:
-  coveralls --verbose
+  - pip install coveralls tox-travis
+script: tox
+after_success: coveralls

@@ -7,18 +7,13 @@ Providing OAuth services for Tastypie APIs
 
 Dependencies
 ============
-This library works with two different OAuth providers, you must install one of them:
-- django-oauth-toolkit: https://github.com/evonove/django-oauth-toolkit
-- django-oauth2-provider: https://github.com/caffeinehit/django-oauth2-provider
-
-Set up one of these libraries before continuing
+This library works with the [django-oauth-toolkit](https://github.com/evonove/django-oauth-toolkit) library. Make sure you have it set up before continuing.
 
 Usage
 =====
 
 1. Add `tastypie_oauth` to `INSTALLED_APPS` in Django.
-2. Specify `OAUTH_ACCESS_TOKEN_MODEL` in the Django settings. At this time it can be `'oauth2_provider.models.AccessToken'` for django-oauth-toolkit and `'provider.oauth2.models.AccessToken'` for django-oauth2-provider.
-3. When you create your Tastypie resources, use `OAuth20Authentication` like so:
+2. When you create your Tastypie resources, use `OAuth20Authentication` like so:
 
     ```python
     # mysite/polls/api.py
@@ -47,7 +42,6 @@ Usage
     ```python
     from tastypie_oauth.authentication import OAuth20ScopedAuthentication
 
-    # With Django-oauth-toolkit
     class ChoiceResource(ModelResource):
         poll = fields.ToOneField("polls.api.PollResource", "poll", full=False)
         class Meta:
@@ -60,21 +54,4 @@ Usage
                 put=("read","write")
             )
     ```
-    ```python
-    from provider.constants import READ, WRITE, READ_WRITE
-    from tastypie_oauth.authentication import OAuth20ScopedAuthentication
-
-    # With Django-oauth2-provider
-    class ChoiceResource(ModelResource):
-        poll = fields.ToOneField("polls.api.PollResource", "poll", full=False)
-        class Meta:
-            resource_name = 'choice'
-            queryset = Choice.objects.all()
-            authorization = DjangoAuthorization()
-            authentication = OAuth2ScopedAuthentication(
-                post=(READ_WRITE,),
-                get=(READ,),
-                put=(READ,WRITE)
-            )
-      ```
-4. After authorizing the user and gaining an access token, you can use the API almost as before with just one minor change. You must add a `oauth_consumer_key` GET or POST parameter with the access token as the value, or put the access token in "Authorization" header.
+3. After authorizing the user and gaining an access token, you can use the API almost as before with just one minor change. You must add a `oauth_consumer_key` GET or POST parameter with the access token as the value, or put the access token in "Authorization" header.
