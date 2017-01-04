@@ -7,7 +7,6 @@ from django.contrib.auth.models import AnonymousUser
 from django.utils import timezone
 from oauth2_provider.models import AccessToken
 from tastypie.authentication import Authentication
-from tastypie.http import HttpUnauthorized
 
 """
 This is a simple OAuth 2.0 authentication model for tastypie
@@ -65,7 +64,7 @@ class OAuth20Authentication(Authentication):
 
             # If OAuth authentication is successful, set the request user to
             # the token user for authorization
-            request.user = token.user
+            request.user = token.user or AnonymousUser()
 
             # If OAuth authentication is successful, set oauth_consumer_key on
             # request in case we need it later
