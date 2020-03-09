@@ -54,7 +54,10 @@ class OAuth20Authentication(Authentication):
             if not key and request.method == 'POST':
                 if request.META.get('CONTENT_TYPE') == 'application/json':
                     decoded_body = request.body.decode('utf8')
-                    key = json.loads(decoded_body)['oauth_consumer_key']
+                    try:
+                        key = json.loads(decoded_body)['oauth_consumer_key']
+                    except (ValueError, KeyError):
+                        pass
             if not key:
                 log.info('OAuth20Authentication. No consumer_key found.')
                 return None
