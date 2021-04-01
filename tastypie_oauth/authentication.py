@@ -78,6 +78,8 @@ class OAuth20Authentication(Authentication):
             log.exception("Error in OAuth20Authentication.")
             request.user = AnonymousUser()
             return False
+        except OAuthError:
+            return False
         except Exception:
             log.exception("Error in OAuth20Authentication.")
             return False
